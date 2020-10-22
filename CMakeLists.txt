@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(unofficial-libuv CONFIG REQUIRED)
 find_package(Boost COMPONENTS fiber)
 
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
+
 include_directories(include)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(libs/fiberio/include)
