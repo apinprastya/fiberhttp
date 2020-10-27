@@ -34,7 +34,14 @@ $ make
 int main()
 {
     fiberhttp::FiberHttpServer server;
-    server.get("/", [](const fiberhttp::Request &req, fiberhttp::Response &res) {
+    fiberhttp::Database dbGlobal(fiberhttp::Database::DB_SQLITE);
+    std::cout << dbGlobal.open("global.db", "", "", "") << std::endl;
+    server.get("/", [db = &dbGlobal](const fiberhttp::Request &req, fiberhttp::Response &res) {
+        auto w = db->query("SELECT 12000");
+        for (int i = 0; i < w.length(); i++) {
+            auto row = w.rowAt(i);
+            std::cout << std::any_cast<int>(row.column(0)) << std::endl;
+        }
         res.set_content("{\"fiberhttp\":true}", "application/json");
     });
     server.run("0.0.0.0", 8990);
@@ -44,9 +51,13 @@ int main()
 
 # Todo
 - [ ] Keep alive
-- [ ] Optimize parser
-- [ ] Adding database access and ORM
-- [ ] Gracefull exit
+- [ ] Optimize parser, possible write own parser using http_parser from nodejs
+- [x] Adding database access
+- [x] SQLite driver
+- [ ] MySQL driver
+- [ ] Postgres driver
+- [ ] SQL builder and/or ORM
+- [x] Gracefull exit
 
 # License
 MIT
