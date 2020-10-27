@@ -18,13 +18,12 @@ namespace fibers = boost::fibers;
     "Hello, World!\n"
 
 namespace fiberhttp {
-FiberHttpServer::FiberHttpServer() {}
+FiberHttpServer::FiberHttpServer() { fiberio::use_on_this_thread(); }
 
 FiberHttpServer::~FiberHttpServer() {}
 
 void FiberHttpServer::run(const std::string &address, int port, int backlog) {
     std::cout << "Server listening at " << address << ":" << port << " with " << backlog << " backlog" << std::endl;
-    fiberio::use_on_this_thread();
 
     mSocketServer.bind(address, port);
     mSocketServer.listen(backlog);
