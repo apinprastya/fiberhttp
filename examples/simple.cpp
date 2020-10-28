@@ -27,6 +27,7 @@ int main() {
                 std::cout << "Error : " << e.what() << std::endl;
             }
         }
+        db->releaseFiber();
     });
     f.wait();
     server.get("/", [db = &dbGlobal](const fiberhttp::Request &req, fiberhttp::Response &res) {

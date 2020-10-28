@@ -128,25 +128,33 @@ void Database::checkIdleConnection() {
             std::cout << "checking idle connection started" << std::endl;
         while (mIsRunning) {
             if (mDriver.size() <= mMaxIdleConnection) {
-                boost::this_fiber::sleep_for(1s);
+                boost::this_fiber::sleep_for(500ms);
+                continue;
             }
             if (mIsRunning) {
                 if (DEBUG)
                     std::cout << "checking idle connection" << std::endl;
-                for (auto it = mFreeDriver.rbegin(); it != mFreeDriver.rend(); it--) {
+
+                std::vector<std::shared_ptr<Driver>> toRemove{};
+                for (auto it = mFreeDriver.begin(); it != mFreeDriver.end(); it++) {
                     if ((*it)->isIdleMax(mIdleConnectionTimeout)) {
-                        (*it)->close();
-                        mFreeDriver.erase(it.base());
-                        auto d = std::find(mDriver.begin(), mDriver.end(), (*it));
-                        if (d != mDriver.end()) {
-                            mDriver.erase(d);
-                        }
+                        toRemove.push_back(*it);
+                    }
+                }
+                for (auto it = toRemove.begin(); it != toRemove.end(); it++) {
+                    auto freeItem = std::find(mFreeDriver.begin(), mFreeDriver.end(), *it);
+                    if (freeItem != mFreeDriver.end()) {
+                        mFreeDriver.erase(freeItem);
+                    }
+                    auto item = std::find(mDriver.begin(), mDriver.end(), *it);
+                    if (item != mDriver.end()) {
+                        mDriver.erase(item);
                     }
                     if (mDriver.size() <= mMaxIdleConnection) {
                         break;
                     }
                 }
-                boost::this_fiber::yield();
+                boost::this_fiber::sleep_for(500ms);
             }
         }
     });

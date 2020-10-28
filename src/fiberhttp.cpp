@@ -68,11 +68,14 @@ void FiberHttpServer::loop() {
                         {
                             std::cout << e.what() << std::endl;
                         }*/
-                        bool close = true;
-                        FiberStream stream(std::move(client));
-                        mHttpLib.processRequest(stream, close, close, nullptr);
+                        try {
+                            bool close = true;
+                            FiberStream stream(std::move(client));
+                            mHttpLib.processRequest(stream, close, close, nullptr);
+                            client.close();
+                        } catch (std::exception e) {
+                        }
                         // stream.flush();
-                        client.close();
                         Database::releaseFiber();
                     },
                     mSocketServer.accept());
