@@ -8,6 +8,9 @@ find_package(unofficial-libuv CONFIG REQUIRED)
 find_package(Boost COMPONENTS fiber)
 
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(libmysql REQUIRED)
 
 include_directories(include)
 include_directories(${Boost_INCLUDE_DIRS})

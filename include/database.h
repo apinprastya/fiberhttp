@@ -21,9 +21,11 @@ class Database {
     ~Database();
     static void releaseFiber();
     static void shutdown();
-    bool open(const std::string &host, const std::string &username, const std::string &password,
+    bool open(const std::string &host, int port, const std::string &username, const std::string &password,
               const std::string &dbName);
     DbResult query(const std::string &sql, const std::vector<std::any> params = {});
+    inline int getDbType() { return mDbType; }
+    void close();
 
   private:
     DbType mDbType;

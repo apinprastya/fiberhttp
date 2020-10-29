@@ -2,6 +2,7 @@
 #define DBRESULT_H
 
 #include <any>
+#include <string>
 #include <vector>
 
 namespace fiberhttp {
@@ -23,10 +24,11 @@ class DbResult {
     DbResult();
     ~DbResult();
 
-    void addRow(const DbRow &&row);
+    inline void addRow(const DbRow &&row) { rows.push_back(std::move(row)); }
 
-    size_t length();
-    bool isEmpty();
+    inline size_t length() { return rows.size(); }
+
+    inline bool isEmpty() { return rows.empty(); }
 
     inline void setLastError(const std::string &error) { mLastError = error; }
 
@@ -50,9 +52,12 @@ class DbResult {
     inline void setAffectedRows(size_t t) { mAffectedRows = t; }
     size_t affectedRows() { return mAffectedRows; }
 
-  private:
+    inline void pushColumnName(const std::string &name) { columnNames.push_back(name); }
+
+    private:
     size_t mLastInsertedId{};
     size_t mAffectedRows{};
+    std::vector<std::string> columnNames;
     std::vector<DbRow> rows{};
     std::string mLastError{};
     bool mSuccess = true;

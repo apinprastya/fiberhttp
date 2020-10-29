@@ -1,11 +1,12 @@
-#ifndef SQLITE_H
-#define SQLITE_H
+#ifndef MYSQL_H
+#define MYSQL_H
 
 #include <driver.h>
-#include <sqlite3.h>
+#include <memory>
+#include <mysql/mysql.h>
 
 namespace fiberhttp {
-class SqliteDriver : public Driver, public std::enable_shared_from_this<SqliteDriver> {
+class MySQLDriver : public Driver, public std::enable_shared_from_this<MySQLDriver> {
   public:
     bool open() override;
     bool close() override;
@@ -13,8 +14,8 @@ class SqliteDriver : public Driver, public std::enable_shared_from_this<SqliteDr
     DbResult query(const std::string &sql, const std::vector<std::any> &params = {}) override;
 
   private:
-    sqlite3 *mDatabase{};
+    MYSQL *mDatabase{};
 };
 } // namespace fiberhttp
 
-#endif // SQLITE_H
+#endif

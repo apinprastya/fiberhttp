@@ -8,6 +8,9 @@
 namespace fiber = boost::fibers;
 
 namespace fiberhttp {
+
+static bool DEBUG = false;
+
 struct Helper {
     DbResult result;
     fiber::promise<int> promise;
@@ -19,7 +22,8 @@ struct Helper {
 };
 
 bool SqliteDriver::open() {
-    std::cout << "OPENNING" << std::endl;
+    if (DEBUG)
+        std::cout << "OPENNING" << std::endl;
     int ret = sqlite3_open(mHost.c_str(), &mDatabase);
     if (SQLITE_OK == ret && mDatabase != nullptr) {
         sqlite3_config(SQLITE_CONFIG_SERIALIZED);
@@ -29,6 +33,8 @@ bool SqliteDriver::open() {
 }
 
 bool SqliteDriver::close() {
+    if (DEBUG)
+        std::cout << "CLOSING" << std::endl;
     int ret = sqlite3_close(mDatabase);
     return SQLITE_OK == ret;
 }
@@ -40,7 +46,7 @@ std::shared_ptr<Driver> SqliteDriver::cloneAndConnect() {
     return ret;
 }
 
-DbResult SqliteDriver::query(const std::string &sql, const std::vector<std::any> params) {
+DbResult SqliteDriver::query(const std::string &sql, const std::vector<std::any> &params) {
     uv_work_t w;
     Helper h(std::move(sql), std::move(params), this);
     fiber::future<int> future(h.promise.get_future());
@@ -94,7 +100,7 @@ DbResult SqliteDriver::query(const std::string &sql, const std::vector<std::any>
                             int col = sqlite3_column_type(stmt, i);
                             switch (col) {
                             case SQLITE_INTEGER: {
-                                int val = sqlite3_column_int(stmt, i);
+                                long long val = sqlite3_column_int(stmt, i);
                                 row.addColumn(val);
                                 break;
                             }

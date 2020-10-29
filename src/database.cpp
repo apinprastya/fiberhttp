@@ -1,3 +1,4 @@
+#include "driver/mysql_driver.h"
 #include "driver/sqlite.h"
 #include <database.h>
 
@@ -20,7 +21,13 @@ Database::Database(DbType dbType, int maxConnection, int maxIdleConnection, int 
     sDatabases.push_back(this);
 }
 
-Database::~Database() {}
+Database::~Database() {
+    if (DEBUG)
+        std::cout << "DATABASE DESTROYED" << std::endl;
+    for (auto d : mDriver) {
+        d->close();
+    }
+}
 
 void Database::releaseFiber() {
     for (auto it : sDatabases) {
@@ -34,7 +41,7 @@ void Database::shutdown() {
     }
 }
 
-bool Database::open(const std::string &host, const std::string &username, const std::string &password,
+bool Database::open(const std::string &host, int port, const std::string &username, const std::string &password,
                     const std::string &dbName) {
     if (mOpenned)
         return true;
@@ -44,9 +51,10 @@ bool Database::open(const std::string &host, const std::string &username, const 
     if (mDbType == DB_SQLITE) {
         driver = std::make_shared<SqliteDriver>();
     } else if (mDbType == DB_MYSQL) {
+        driver = std::make_shared<MySQLDriver>();
     } else if (mDbType == DB_POSTGRESQL) {
     }
-    driver->setup(host, username, password, dbName);
+    driver->setup(host, username, password, dbName, port);
     if (driver->open()) {
         mFreeDriver.push_back(driver);
         mDriver.push_back(driver);
@@ -150,6 +158,7 @@ void Database::checkIdleConnection() {
                     if (item != mDriver.end()) {
                         mDriver.erase(item);
                     }
+                    (*it)->close();
                     if (mDriver.size() <= mMaxIdleConnection) {
                         break;
                     }
