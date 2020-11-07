@@ -1,6 +1,6 @@
 # FiberHTTP
 
-C++ http server with fiber. This library built using :
+C++ asynchronous http server with fiber. This library built using :
 - boost::fiber
 - libuv
 - fiberio [https://github.com/hampus/fiberio](https://github.com/hampus/fiberio)
@@ -13,6 +13,9 @@ Library is still in early phase of development, big changes may happen anytimes.
 # Requirement
 - git, cmake, C++ compiler (GCC, MSVC, Clang)
 - vcpkg and install package boost::fibers libuv libmysql sqlite3
+
+## Additional step
+- copy others/vcpkg/libmysql to [vcpkg_installed_folder]/installed/[triplet]/share/
 
 # Compile
 ```bash
