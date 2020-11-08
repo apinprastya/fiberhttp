@@ -6,7 +6,7 @@
 
 namespace fiberhttp {
 
-static bool DEBUG = true;
+static bool DEBUG = false;
 
 using namespace std::chrono_literals;
 

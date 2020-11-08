@@ -3,6 +3,11 @@ add_library(fiberhttp
     fiberhttp.cpp
     database.cpp
     dbresult.cpp
+    ../libs/http_parser/http_parser.c
+    router.cpp
+    parser.cpp
+    reply.cpp
+    request.cpp
     driver/sqlite.cpp
     driver/mysql_driver.cpp
 )
@@ -14,6 +19,9 @@ IF (WIN32)
     unofficial::libuv::libuv
     unofficial::sqlite3::sqlite3
     libmysql
+    fmt::fmt
+    nlohmann_json
+    nlohmann_json::nlohmann_json
     ws2_32
 )
 ELSE()
@@ -22,10 +30,14 @@ ELSE()
     ${Boost_LIBRARIES} 
     unofficial::libuv::libuv 
     unofficial::sqlite3::sqlite3 
-    #/media/ssd/Project/cpp/vcpkg_lin/installed/x64-linux/lib/libmysqlclient.a
+    /media/ssd/Project/cpp/vcpkg_lin/installed/x64-linux/lib/libmysqlclient.a
     OpenSSL::SSL 
     OpenSSL::Crypto
     ZLIB::ZLIB
+    #libmysql
+    fmt::fmt
+    nlohmann_json 
+    nlohmann_json::nlohmann_json
 )
 ENDIF()
 

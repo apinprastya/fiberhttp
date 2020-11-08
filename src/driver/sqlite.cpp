@@ -76,8 +76,9 @@ DbResult SqliteDriver::query(const std::string &sql, const std::vector<std::any>
                         if (param.type() == typeid(int)) {
                             retBind = sqlite3_bind_int(stmt, index++, std::any_cast<int>(param));
                         } else if (param.type() == typeid(std::string)) {
-                            auto str = std::any_cast<std::string>(param);
-                            retBind = sqlite3_bind_text(stmt, index++, str.c_str(), str.length(), nullptr);
+                            auto str = std::any_cast<std::string &>(param);
+                            retBind = sqlite3_bind_text(stmt, index++, std::any_cast<std::string &>(param).data(),
+                                                        std::any_cast<std::string &>(param).length(), nullptr);
                         } else if (param.type() == typeid(char *) || param.type() == typeid(const char *)) {
                             const char *str = std::any_cast<const char *>(param);
                             retBind = sqlite3_bind_text(stmt, index++, str, strlen(str), nullptr);

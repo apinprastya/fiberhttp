@@ -3,9 +3,9 @@
 //
 #include <boost/fiber/all.hpp>
 //
-#include "httpstream.h"
 #include <database.h>
 //
+#include <parser.h>
 #include <uv.h>
 
 namespace fibers = boost::fibers;
@@ -18,6 +18,7 @@ namespace fibers = boost::fibers;
     "Hello, World!\n"
 
 namespace fiberhttp {
+
 FiberHttpServer::FiberHttpServer() { fiberio::use_on_this_thread(); }
 
 FiberHttpServer::~FiberHttpServer() {}
@@ -55,27 +56,11 @@ void FiberHttpServer::loop() {
             try {
                 fibers::async(
                     [this](fiberio::socket client) {
-                        /*bool close = false;
-                        try
-                        {
-                            int counter = mKeepAliveMax;
-                            while (counter > 0)
-                            {
-                                counter--;
-                            }
-                        }
-                        catch (std::exception e)
-                        {
-                            std::cout << e.what() << std::endl;
-                        }*/
                         try {
-                            bool close = true;
-                            FiberStream stream(std::move(client));
-                            mHttpLib.processRequest(stream, close, close, nullptr);
-                            client.close();
+                            Parser parser(&client);
+                            parser.process(mRouter);
                         } catch (std::exception e) {
                         }
-                        // stream.flush();
                         Database::releaseFiber();
                     },
                     mSocketServer.accept());
@@ -86,31 +71,6 @@ void FiberHttpServer::loop() {
         }
     }));
     fi.wait();
-}
-
-FiberHttpServer &FiberHttpServer::get(const char *pattern, Handler handler) {
-    mHttpLib.Get(pattern, handler);
-    return *this;
-}
-FiberHttpServer &FiberHttpServer::post(const char *pattern, Handler handler) {
-    mHttpLib.Post(pattern, handler);
-    return *this;
-}
-FiberHttpServer &FiberHttpServer::put(const char *pattern, Handler handler) {
-    mHttpLib.Put(pattern, handler);
-    return *this;
-}
-FiberHttpServer &FiberHttpServer::del(const char *pattern, Handler handler) {
-    mHttpLib.Delete(pattern, handler);
-    return *this;
-}
-FiberHttpServer &FiberHttpServer::patch(const char *pattern, Handler handler) {
-    mHttpLib.Patch(pattern, handler);
-    return *this;
-}
-FiberHttpServer &FiberHttpServer::options(const char *pattern, Handler handler) {
-    mHttpLib.Options(pattern, handler);
-    return *this;
 }
 
 } // namespace fiberhttp
