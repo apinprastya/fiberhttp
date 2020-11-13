@@ -164,6 +164,8 @@ Full example can be found at example folder.
 # Todo
 - [ ] Keep alive
 - [x] Http parser using nodejs http-parse
+- [ ] GZip compression
+- [ ] Middleware
 - [ ] Error handling
 - [x] Adding database access
 - [x] SQLite driver
@@ -171,6 +173,8 @@ Full example can be found at example folder.
 - [ ] Postgres driver
 - [ ] SQL builder and/or ORM
 - [x] Gracefull exit
+- [ ] SSL?
+- [ ] HTML template?
 
 # License
 MIT
