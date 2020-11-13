@@ -1,9 +1,6 @@
 [submodule "libs/fiberio"]
 	path = libs/fiberio
 	url = https://github.com/apinprastya/fiberio
-[submodule "libs/cpp-httplib"]
-	path = libs/cpp-httplib
-	url = https://github.com/yhirose/cpp-httplib
 [submodule "libs/http_parser"]
 	path = libs/http_parser
 	url = https://github.com/nodejs/http-parser

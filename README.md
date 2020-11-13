@@ -4,11 +4,11 @@ C++ asynchronous http server with fiber. This library built using :
 - boost::fiber
 - libuv
 - fiberio [https://github.com/hampus/fiberio](https://github.com/hampus/fiberio)
-- cpp-httplib [https://github.com/yhirose/cpp-httplib](https://github.com/yhirose/cpp-httplib)
+- nlohmann-json [https://github.com/nlohmann/json](https://github.com/nlohmann/json)
+- fmt [https://github.com/fmtlib/fmt](https://github.com/fmtlib/fmt)
 
 This library test compiled running on Linux and Windows.
 Library is still in early phase of development, big changes may happen anytimes.
-
 
 # Requirement
 - git, cmake, C++ compiler (GCC, MSVC, Clang)
