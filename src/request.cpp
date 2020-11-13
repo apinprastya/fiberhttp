@@ -1,4 +1,5 @@
 #include "request.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <iostream>
 #include <regex>
 
@@ -29,6 +30,9 @@ void Request::setUrl(const std::string &url) {
         }
     } else {
         mPath = mUrl;
+    }
+    if (mPath.length() > 1 && boost::algorithm::ends_with(mPath, "/")) {
+        mPath = mPath.substr(0, mPath.length() - 1);
     }
 }
 

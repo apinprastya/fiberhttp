@@ -1,5 +1,6 @@
 #include "router.h"
 #include "parser.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <iostream>
 
 namespace fiberhttp {
@@ -60,6 +61,8 @@ void Router::insertRouter(int method, const std::string &&pattern, const Handler
     std::regex r1("(:\\w*)", std::regex_constants::icase);
     std::smatch m;
     auto str = pattern;
+    if (str.length() > 1 && boost::algorithm::ends_with(str, "/"))
+        str = str.substr(0, str.length() - 1);
     std::vector<std::string> params;
     while (std::regex_search(str, m, r1)) {
         params.push_back(m.str(1));
